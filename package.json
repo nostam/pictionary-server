@@ -4,15 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/src/server.js",
+    "start": "node ./dist/server.js",
     "dev": "nodemon -w src -x ts-node -r dotenv/config ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/ts-node build.ts",
     "postinstall": "npm run build"
-  },
-  "engines": {
-    "node": "^14.x",
-    "npm": "^7.x"
   },
   "keywords": [],
   "author": "",
