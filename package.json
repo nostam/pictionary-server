@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/server.js",
+    "start": "node ../dist/server.js",
     "dev": "nodemon -w src -x ts-node -r dotenv/config ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ts-node build.ts",
+    "build": "tsc",
     "postinstall": "npm run build"
   },
   "keywords": [],
