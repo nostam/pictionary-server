@@ -2,12 +2,13 @@
   "name": "pictionary",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.ts",
+  "engines": {"npm": "^7.x"},
   "scripts": {
     "start": "node ../dist/server.js",
     "dev": "nodemon -w src -x ts-node -r dotenv/config ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "postinstall": "npm run build"
   },
   "keywords": [],
