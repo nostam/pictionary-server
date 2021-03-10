@@ -14,16 +14,13 @@ logger.timestamp = false;
   try {
     // Remove current build
     await remove("./dist/");
-    // Copy front-end files
-    await copy("./src/public", "./dist/public");
-    await copy("./src/views", "./dist/views");
     // Copy production env file
     await copy(
       "./src/pre-start/env/production.env",
       "./dist/pre-start/env/production.env"
     );
     // Copy back-end files
-    await exec("tsc --build tsconfig.prod.json", "./");
+    await exec("tsc", "./");
   } catch (err) {
     logger.err(err);
   }
