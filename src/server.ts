@@ -6,16 +6,14 @@ const cookieParser = require("cookie-parser");
 // const passport = require("passport");
 const http = require("http");
 
-const {
-  loggerMiddleware,
-  httpErrorHandler,
-} = require("./src/shared/functions");
-const SocketServer = require("./socket");
+const { loggerMiddleware, httpErrorHandler } = require("./shared/functions");
+import logger from "./shared/Logger";
+// const SocketServer = require("./socket");
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = Number(process.env.PORT || 3001);
 const httpServer = http.createServer(app);
-SocketServer(httpServer);
+// SocketServer(httpServer);
 
 app.use(helmet());
 app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
@@ -29,7 +27,7 @@ app.use(httpErrorHandler);
 
 mongoose
   .connect(
-    process.env.MONGO_CONNECTION,
+    process.env.MONGODB,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -40,7 +38,7 @@ mongoose
   )
   .then(() =>
     httpServer.listen(port, () => {
-      console.log("Running on port", port);
+      logger.info("Running on port: " + port);
     })
   )
-  .catch((err: Error) => console.log(err));
+  .catch((err: Error) => logger.err(err));

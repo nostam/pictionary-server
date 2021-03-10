@@ -7,7 +7,8 @@
     "start": "node ./dist/server.js",
     "dev": "nodemon -w src -x ts-node -r dotenv/config ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/ts-node build.ts"
+    "build": "./node_modules/.bin/ts-node build.ts",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,7 @@
     "helmet": "^4.4.1",
     "http-status-codes": "^2.1.4",
     "jet-logger": "^1.0.4",
-    "mongoose": "^5.11.19",
+    "mongoose": "^5.11.15",
     "passport": "^0.4.1",
     "socket.io": "^2.4.1"
   },
