@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "description": "",
   "main": "src/server.ts",
-  "engines": {"npm": "^7.x"},
+  "engines": {
+    "npm": "7.x",
+    "node": "14.x"
+  },
   "scripts": {
-    "start": "node ../dist/server.js",
+    "start": "node ./dist/server.js",
     "dev": "nodemon -w src -x ts-node -r dotenv/config ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf ./dist && tsc",
+    "build": "rimraf ./dist && tsc",
     "postinstall": "npm run build"
   },
   "keywords": [],
@@ -36,6 +39,7 @@
     "@types/socket.io": "^2.1.13",
     "fs-extra": "^9.1.0",
     "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }
