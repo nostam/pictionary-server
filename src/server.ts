@@ -16,15 +16,13 @@ const httpServer = http.createServer(app);
 // SocketServer(httpServer);
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
+// app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
 app.use(express.json());
 app.use(cookieParser());
 // app.use(passport.initialize());
 
 app.use(loggerMiddleware);
-app.get("/test", (req, res) => {
-  res.send("hello world");
-});
+
 app.use(httpErrorHandler);
 
 mongoose

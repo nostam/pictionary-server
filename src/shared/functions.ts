@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { getReasonPhrase } from "http-status-codes";
 
 import { IErrMsg } from "./constants";
-
+import logger from "./Logger";
 export const loggerMiddleware = (
   req: Request,
   res: Response,
@@ -15,13 +15,14 @@ export const loggerMiddleware = (
 export const httpErrorHandler: ErrorRequestHandler = (
   err: IErrMsg,
   req,
-  res
+  res,
+  next
 ) => {
-  console.log(err);
+  logger.err(err, true);
   if (!res.headersSent) {
-    if (err.httpStatusCode === undefined) err.httpStatusCode = 500;
-    res.status(err.httpStatusCode).send({
-      error: err.error ? err.error : getReasonPhrase(err.httpStatusCode),
+    return res.status((err.status = 500)).send({
+      error: err.message ? err.message : getReasonPhrase((err.status = 500)),
     });
   }
+  return res.status(500).send(getReasonPhrase((err.status = 500)));
 };

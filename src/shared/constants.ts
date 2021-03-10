@@ -15,6 +15,7 @@ export const refreshTokenOptions = {
 };
 
 export interface IErrMsg extends Error {
+  status?: number;
   httpStatusCode?: number;
-  error: string;
+  message: string;
 }
