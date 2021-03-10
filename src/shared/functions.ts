@@ -3,6 +3,13 @@ import { getReasonPhrase } from "http-status-codes";
 
 import { IErrMsg } from "./constants";
 import logger from "./Logger";
+
+export function env(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing: process.env['${name}'].`);
+  return value;
+}
+
 export const loggerMiddleware = (
   req: Request,
   res: Response,

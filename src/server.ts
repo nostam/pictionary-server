@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 
 import BaseRouter from "./services";
-import { loggerMiddleware, httpErrorHandler } from "./shared/functions";
+import { loggerMiddleware, httpErrorHandler, env } from "./shared/functions";
 import logger from "./shared/Logger";
 
 // import SocketServer from "./socket";
@@ -29,7 +29,7 @@ app.use("/", BaseRouter);
 app.use(httpErrorHandler);
 
 mongoose
-  .connect(process.env.MONGODB!, {
+  .connect(env("MONGODB"), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
