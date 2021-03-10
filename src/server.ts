@@ -1,14 +1,17 @@
+import "dotenv/config";
 import express from "express";
-const cors = require("cors");
-const helmet = require("helmet");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
-// const passport = require("passport");
-const http = require("http");
+// import cors from "cors";
+import helmet from "helmet";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+// import passport from ("passport");
+import http from "http";
 
-const { loggerMiddleware, httpErrorHandler } = require("./shared/functions");
+import BaseRouter from "./services";
+import { loggerMiddleware, httpErrorHandler } from "./shared/functions";
 import logger from "./shared/Logger";
-// const SocketServer = require("./socket");
+
+// import SocketServer from "./socket";
 
 const app = express();
 const port = Number(process.env.PORT || 3001);
@@ -22,20 +25,16 @@ app.use(cookieParser());
 // app.use(passport.initialize());
 
 app.use(loggerMiddleware);
-
+app.use("/", BaseRouter);
 app.use(httpErrorHandler);
 
 mongoose
-  .connect(
-    process.env.MONGODB,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-    },
-    { autoIndex: false }
-  )
+  .connect(process.env.MONGODB!, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+  })
   .then(() =>
     httpServer.listen(port, () => {
       logger.info("Running on port: " + port);
