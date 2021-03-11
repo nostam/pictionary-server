@@ -4,23 +4,23 @@ import express from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-// import passport from ("passport");
-import http from "http";
+// import passport from "passport";
+import { createServer } from "http";
 
 import BaseRouter from "./services";
 import { loggerMiddleware, httpErrorHandler, env } from "./shared/functions";
 import logger from "./shared/Logger";
-
-// import SocketServer from "./socket";
+import SocketServer from "./socket";
 
 const app = express();
 const port = Number(process.env.PORT || 3001);
-const httpServer = http.createServer(app);
-// SocketServer(httpServer);
+const httpServer = createServer(app);
+SocketServer(httpServer);
 
 app.use(helmet());
 // app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
 app.use(express.json());
+
 app.use(cookieParser());
 // app.use(passport.initialize());
 
