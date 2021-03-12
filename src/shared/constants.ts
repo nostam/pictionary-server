@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export const accessTokenOptions = {
   httpOnly: true,
   path: "/",
@@ -18,4 +20,50 @@ export interface IErrMsg extends Error {
   status?: number;
   httpStatusCode?: number;
   message: string;
+}
+export interface IUser extends Document {
+  nickname?: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  email: string;
+  avatar?: string;
+  status?: string;
+  desciption?: string;
+  role?: string;
+  googleId?: string;
+  socketId?: string;
+  refreshTokens: RefreshToken[];
+}
+
+export interface IResUser extends Document {
+  nickname?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar?: string;
+  status?: string;
+  desciption?: string;
+  role?: string;
+  googleId?: string;
+  socketId?: string;
+}
+export interface RefreshToken {
+  tokens: string;
+}
+
+export interface IRoom {
+  users: IUser[];
+  started: Date;
+  ended: Date;
+  words: string[];
+  level?: string[];
+  mode?: string[];
+}
+
+export interface IRoomChat {
+  from: string;
+  message: string;
+  room: string;
+  round: number;
 }
