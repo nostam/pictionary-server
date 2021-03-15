@@ -18,5 +18,13 @@ export default function SocketServer(server: Server) {
         logger.err(error);
       }
     });
+    socket.on("canvasCoordinates", async (data) => {
+      try {
+        logger.info(data);
+        socket.broadcast.emit("canvasCoordinates", data);
+      } catch (error) {
+        logger.err(error);
+      }
+    });
   });
 }
