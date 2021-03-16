@@ -26,5 +26,9 @@ export default function SocketServer(server: Server) {
         logger.err(error);
       }
     });
+    socket.on("canvasData", async (dataURL) => {
+      logger.info(dataURL.length);
+      socket.in("test").broadcast.emit("canvasData", dataURL);
+    });
   });
 }
