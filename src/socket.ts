@@ -11,9 +11,9 @@ export default function SocketServer(server: Server) {
         socket.join(data.room);
         logger.info(`${socket.id} joined ${data.room}`);
         const msgToRoomMembers = {};
-        socket.broadcast.to(data.room).emit("message", msgToRoomMembers);
+        socket.to(data.room).emit("message", msgToRoomMembers);
         const roomData = { room: "", users: [] };
-        io.to(data.room).emit("roomData", roomData);
+        socket.to(data.room).emit("roomData", roomData);
       } catch (error) {
         logger.err(error);
       }

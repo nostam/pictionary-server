@@ -7,7 +7,6 @@ export const accessTokenOptions = {
   sameSite: "None",
   secure: true,
 };
-
 export const refreshTokenOptions = {
   httpOnly: true,
   path: "/users/refreshToken",
@@ -15,7 +14,6 @@ export const refreshTokenOptions = {
   sameSite: "None",
   secure: true,
 };
-
 export interface IErrMsg extends Error {
   status?: number;
   httpStatusCode?: number;
@@ -52,12 +50,13 @@ export interface RefreshToken {
   tokens: string;
 }
 
-export interface IRoom {
+export interface IRoom extends Document {
+  creator: string;
   users: IUser[];
-  started: Date;
-  ended: Date;
+  startedAt: Date;
+  endedAt: Date;
   words: string[];
-  level?: string[];
+  difficulty: difficulty;
   mode?: string[];
 }
 
@@ -66,4 +65,11 @@ export interface IRoomChat {
   message: string;
   room: string;
   round: number;
+}
+
+export enum difficulty {
+  easy,
+  normal,
+  hard,
+  lunatic,
 }
