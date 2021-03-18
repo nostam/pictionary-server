@@ -58,6 +58,7 @@ export interface IRoom extends Document {
   words: string[];
   difficulty: difficulty;
   mode?: string[];
+  slug: string;
 }
 
 export interface IRoomChat {
