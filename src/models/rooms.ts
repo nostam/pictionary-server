@@ -14,6 +14,6 @@ export const RoomSchema = new Schema<IRoom>(
   { timestamps: true }
 );
 
-const RoomsModal = model("rooms", RoomSchema);
+const RoomModal = model("rooms", RoomSchema);
 
-export default RoomsModal;
+export default RoomModal;

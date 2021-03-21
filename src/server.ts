@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 // import cors from "cors";
 import helmet from "helmet";
+import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 // import passport from "passport";
@@ -17,8 +18,8 @@ const port = Number(process.env.PORT || 3001);
 const httpServer = createServer(app);
 SocketServer(httpServer);
 
-app.use(helmet());
-// app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
+// app.use(helmet());
+app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
 app.use(express.json());
 
 app.use(cookieParser());
