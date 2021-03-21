@@ -51,14 +51,14 @@ export interface RefreshToken {
 }
 
 export interface IRoom extends Document {
-  creator: string;
-  users: IUser[];
+  // TODO implement after user is created
+  creator?: string;
+  users?: IUser[];
   startedAt: Date;
   endedAt: Date;
   words: string[];
   difficulty: difficulty;
   mode?: string[];
-  slug: string;
 }
 
 export interface IRoomChat {
