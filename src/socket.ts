@@ -1,10 +1,12 @@
 import socketio, { Socket } from "socket.io";
 import { Server } from "http";
 import logger from "./shared/Logger";
+import RoomModal from "./models/rooms";
 
 export default function SocketServer(server: Server) {
   const io = socketio(server);
   io.on("connection", (socket: Socket) => {
+    socket.to(socket.id).emit(socket.id);
     logger.imp("connection established: " + socket.id);
     socket.on("joinRoom", async (data) => {
       try {
@@ -29,6 +31,21 @@ export default function SocketServer(server: Server) {
     socket.on("canvasData", async (dataURL) => {
       logger.info(dataURL.length);
       socket.in("test").broadcast.emit("canvasData", dataURL);
+    });
+    socket.on("message", async (data) => {
+      // const entry = await RoomModal.findById(data.room);
+      console.log(data);
+      socket.to(data.room).emit("message", data);
+      const entry = { words: ["Smile", "star"] };
+      const ans = entry!.words![data.round];
+      if (data.message.split(" ")[0].toLowerCase() === ans.toLowerCase()) {
+        socket.to(data.room).emit("message", {
+          message: `Correct answers is ${ans}!`,
+          from: "SYSTEM",
+          round: data.round,
+          room: data.room,
+        });
+      }
     });
   });
 }
