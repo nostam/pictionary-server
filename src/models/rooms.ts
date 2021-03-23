@@ -10,6 +10,7 @@ export const RoomSchema = new Schema<IRoom>(
     words: ["star", "smile"], //TODO update wordlist
     difficulty: String,
     mode: String,
+    status: String,
   },
   { timestamps: true }
 );

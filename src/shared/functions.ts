@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { getReasonPhrase } from "http-status-codes";
-
 import { IErrMsg } from "./constants";
 import logger from "./Logger";
 

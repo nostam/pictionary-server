@@ -1,6 +1,7 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import RoomModal from "../models/rooms";
 import { APIError } from "../shared/classes";
+
 const router = Router();
 
 router.post("/create", async (req, res, next) => {
@@ -8,6 +9,15 @@ router.post("/create", async (req, res, next) => {
     const newRoom = new RoomModal(req.body);
     const data = await newRoom.save();
     res.status(201).send(data);
+  } catch (error) {
+    next(new APIError(error));
+  }
+});
+
+router.get("/", async (req, res, next) => {
+  try {
+    const roomList = await RoomModal.find({ status: "waiting" });
+    res.send(roomList);
   } catch (error) {
     next(new APIError(error));
   }

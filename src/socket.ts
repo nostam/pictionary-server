@@ -12,12 +12,24 @@ export default function SocketServer(server: Server) {
       try {
         socket.join(data.room);
         logger.info(`${socket.id} joined ${data.room}`);
-        const msgToRoomMembers = {};
+        const msgToRoomMembers = {
+          from: "SYSTEM",
+          message: `${socket.id} joined ${data.room}`,
+          round: 0,
+          room: data.room,
+        };
         socket.to(data.room).emit("message", msgToRoomMembers);
         const roomData = { room: "", users: [] };
         socket.to(data.room).emit("roomData", roomData);
       } catch (error) {
         logger.err(error);
+      }
+    });
+    socket.on("disconnect", async (data) => {
+      const room = await RoomModal.findById(data._id);
+      if (room) {
+        room.users!.filter((user) => user.socketId !== socket.id);
+        const res = await RoomModal.findByIdAndUpdate(data._id, room);
       }
     });
     socket.on("canvasCoordinates", async (data) => {
