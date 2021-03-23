@@ -11,6 +11,7 @@ export const RoomSchema = new Schema<IRoom>(
     difficulty: String,
     mode: String,
     status: String,
+    round: { type: number, default: 0 },
   },
   { timestamps: true }
 );
