@@ -16,7 +16,11 @@ router.post("/create", async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const roomList = await RoomModal.find({ status: "waiting" });
+    const roomList = await RoomModal.find({
+      status: "waiting",
+      createdAt: { $gte: new Date().getTime() - 1000 * 60 * 60 },
+    });
+    console.log(roomList);
     res.send(roomList);
   } catch (error) {
     next(new APIError(error));
