@@ -8,7 +8,7 @@ export async function removeUserFromRoom(room: string, sid: string) {
       { $pull: { users: sid } },
       { new: true }
     );
-    return res;
+    if (res) return res;
   } catch (error) {
     logger.err(error);
   }
@@ -23,7 +23,7 @@ export async function addUserToRoom(room: string, sid: string) {
       },
       { new: true }
     );
-    return res;
+    if (res) return res;
   } catch (error) {
     logger.err(error);
   }
@@ -36,7 +36,7 @@ export async function updateRoomStatus(room: string, status: string) {
       { status },
       { new: true }
     );
-    return res;
+    if (res) return res;
   } catch (error) {
     logger.err(error);
   }

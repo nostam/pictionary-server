@@ -14,24 +14,25 @@ export default function SocketServer(server: Server) {
   io.on("connection", (socket: Socket) => {
     socket.to(socket.id).emit(socket.id);
     logger.imp("connection established: " + socket.id);
-    socket.on("joinRoom", async (data) => {
+    socket.on("joinRoom", async (room) => {
       try {
-        socket.join(data.room);
-        logger.info(`${socket.id} joined ${data.room}`);
+        socket.join(room);
+        logger.info(`${socket.id} joined ${room}`);
         const msgToRoomMembers = {
           from: "SYSTEM",
           message: `${socket.id} joined`,
-          room: data.room,
+          room,
         };
-        socket.to(data.room).emit("message", msgToRoomMembers);
-        const res = await addUserToRoom(data.room, socket.id);
-        if (res) socket.to(data.room).emit("roomData", res);
+        socket.to(room).emit("message", msgToRoomMembers);
+        const res = await addUserToRoom(room, socket.id);
+        if (res) socket.to(room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
     });
 
     socket.on("leaveRoom", async (room: string) => {
+      logger.imp(`${socket.id} left ${room}`);
       socket.to(room).emit("message", {
         from: "SYSTEM",
         message: `${socket.id} has left`,

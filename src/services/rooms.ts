@@ -18,7 +18,8 @@ router.post("/create", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const room = await RoomModal.findById(req.params.id);
-    if (room!.status !== "waiting") res.status(404).send();
+    if (room!.status === "waiting") res.send(room);
+    else res.status(404).send();
   } catch (error) {
     logger.err(error);
     res.status(404).send();
