@@ -59,6 +59,7 @@ export interface IRoom extends Document {
   words: string[];
   difficulty: difficulty;
   mode?: string[];
+  status: string;
 }
 
 export interface IRoomChat {
@@ -73,4 +74,10 @@ export enum difficulty {
   normal,
   hard,
   lunatic,
+}
+
+export interface ICanvas {
+  from: string;
+  room: string;
+  dataURL: string;
 }
