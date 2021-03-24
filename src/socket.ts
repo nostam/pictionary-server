@@ -15,32 +15,52 @@ export default function SocketServer(server: Server) {
         logger.info(`${socket.id} joined ${data.room}`);
         const msgToRoomMembers = {
           from: "SYSTEM",
-          message: `${socket.id} joined ${data.room}`,
-          round: 0,
+          message: `${socket.id} joined`,
           room: data.room,
         };
         socket.to(data.room).emit("message", msgToRoomMembers);
         const res = await RoomModal.findByIdAndUpdate(
           data.room,
           {
-            $push: { user: socket.id },
+            $push: { users: socket.id }, //TODO
           },
           { new: true }
         );
-        logger.info(res);
-        socket.to(data.room).emit("roomData", res);
+        if (res) socket.to(data.room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
     });
-    socket.on("disconnect", async (data) => {
-      logger.imp(`${socket.id}: ${data}`);
-      if (data === "transport close") {
-        const room = await RoomModal.findById(data._id);
-        if (room) {
-          room.users!.filter((user) => user.socketId !== socket.id);
-          const res = await RoomModal.findByIdAndUpdate(data._id, room);
-        }
+    socket.on("leaveRoom", async (room: string) => {
+      socket.to(room).emit("message", {
+        from: "SYSTEM",
+        message: `${socket.id} has left`,
+        room,
+      });
+      const payload = await RoomModal.findByIdAndUpdate(
+        room,
+        { $pull: { users: socket.id } },
+        { new: true }
+      );
+      if (payload) socket.to(room).emit("roomData", payload);
+    });
+    socket.on("disconnect", async (reason: string) => {
+      logger.imp(`${socket.id}: ${reason}`);
+    });
+    socket.on("gameStatus", async (data) => {
+      try {
+        logger.info(`change status request: game ${data.status}`);
+        const room = await RoomModal.findByIdAndUpdate(
+          data.room,
+          {
+            status: data.status,
+          },
+          { new: true }
+        );
+        console.log(room!);
+        if (room) socket.to(data.room).emit("roomData", room);
+      } catch (error) {
+        logger.err(error);
       }
     });
     socket.on("canvasCoordinates", async (data) => {

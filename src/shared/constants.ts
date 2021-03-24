@@ -53,7 +53,8 @@ export interface RefreshToken {
 export interface IRoom extends Document {
   // TODO implement after user is created
   creator?: string;
-  users?: IUser[];
+  // users?: IUser[];
+  users?: string[];
   startedAt: Date;
   endedAt: Date;
   words: string[];
