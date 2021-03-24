@@ -25,7 +25,7 @@ export default function SocketServer(server: Server) {
         };
         socket.to(room).emit("message", msgToRoomMembers);
         const res = await addUserToRoom(room, socket.id);
-        if (res) socket.to(room).emit("roomData", res);
+        if (res) socket.in(room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
@@ -33,13 +33,16 @@ export default function SocketServer(server: Server) {
 
     socket.on("leaveRoom", async (room: string) => {
       logger.imp(`${socket.id} left ${room}`);
-      socket.to(room).emit("message", {
+      socket.in(room).emit("message", {
         from: "SYSTEM",
         message: `${socket.id} has left`,
         room,
       });
       const res = await removeUserFromRoom(room, socket.id);
-      if (res) socket.to(room).emit("roomData", res);
+      if (res) {
+        logger.warn(res);
+        socket.in(room).emit("roomData", res);
+      }
     });
 
     socket.on("disconnect", async (reason: string) => {
@@ -50,7 +53,8 @@ export default function SocketServer(server: Server) {
       try {
         logger.info(`change status request: game ${data.status}`);
         const res = await updateRoomStatus(data.room, data.status);
-        if (res) socket.to(data.room).emit("roomData", res);
+        console.log(res);
+        if (res) io.in(data.room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
@@ -59,7 +63,7 @@ export default function SocketServer(server: Server) {
     socket.on("canvasCoordinates", async (data) => {
       try {
         logger.info(data);
-        socket.broadcast.emit("canvasCoordinates", data);
+        socket.broadcast.to(data.room).emit("canvasCoordinates", data);
       } catch (error) {
         logger.err(error);
       }
@@ -68,7 +72,7 @@ export default function SocketServer(server: Server) {
     socket.on("canvasData", async (data: ICanvas) => {
       //TODO mode
       logger.info(`Canvas size: ${data.dataURL.length}`);
-      socket.in(data.room).broadcast.emit("canvasData", data);
+      socket.in(data.room).emit("canvasData", data);
     });
 
     socket.on("message", async (data: IRoomChat) => {
@@ -77,7 +81,7 @@ export default function SocketServer(server: Server) {
       if (room && room.status === "ongoing") {
         const ans = room.words[data.round];
         if (data.message.split(" ")[0].toLowerCase() === ans.toLowerCase()) {
-          socket.to(data.room).emit("message", {
+          socket.in(data.room).emit("message", {
             message: `Correct answers is ${ans}!`,
             from: "SYSTEM",
             round: data.round,
