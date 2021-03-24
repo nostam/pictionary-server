@@ -3,9 +3,14 @@ import { Server } from "http";
 import logger from "./shared/Logger";
 import RoomModal from "./models/rooms";
 import { IRoomChat, ICanvas } from "./shared/constants";
-
+import {
+  addUserToRoom,
+  removeUserFromRoom,
+  updateRoomStatus,
+} from "./shared/rooms";
 export default function SocketServer(server: Server) {
   const io = socketio(server);
+
   io.on("connection", (socket: Socket) => {
     socket.to(socket.id).emit(socket.id);
     logger.imp("connection established: " + socket.id);
@@ -19,50 +24,37 @@ export default function SocketServer(server: Server) {
           room: data.room,
         };
         socket.to(data.room).emit("message", msgToRoomMembers);
-        const res = await RoomModal.findByIdAndUpdate(
-          data.room,
-          {
-            $push: { users: socket.id }, //TODO
-          },
-          { new: true }
-        );
+        const res = await addUserToRoom(data.room, socket.id);
         if (res) socket.to(data.room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
     });
+
     socket.on("leaveRoom", async (room: string) => {
       socket.to(room).emit("message", {
         from: "SYSTEM",
         message: `${socket.id} has left`,
         room,
       });
-      const payload = await RoomModal.findByIdAndUpdate(
-        room,
-        { $pull: { users: socket.id } },
-        { new: true }
-      );
-      if (payload) socket.to(room).emit("roomData", payload);
+      const res = await removeUserFromRoom(room, socket.id);
+      if (res) socket.to(room).emit("roomData", res);
     });
+
     socket.on("disconnect", async (reason: string) => {
       logger.imp(`${socket.id}: ${reason}`);
     });
+
     socket.on("gameStatus", async (data) => {
       try {
         logger.info(`change status request: game ${data.status}`);
-        const room = await RoomModal.findByIdAndUpdate(
-          data.room,
-          {
-            status: data.status,
-          },
-          { new: true }
-        );
-        console.log(room!);
-        if (room) socket.to(data.room).emit("roomData", room);
+        const res = await updateRoomStatus(data.room, data.status);
+        if (res) socket.to(data.room).emit("roomData", res);
       } catch (error) {
         logger.err(error);
       }
     });
+
     socket.on("canvasCoordinates", async (data) => {
       try {
         logger.info(data);
@@ -71,11 +63,13 @@ export default function SocketServer(server: Server) {
         logger.err(error);
       }
     });
+
     socket.on("canvasData", async (data: ICanvas) => {
       //TODO mode
       logger.info(`Canvas size: ${data.dataURL.length}`);
       socket.in(data.room).broadcast.emit("canvasData", data);
     });
+
     socket.on("message", async (data: IRoomChat) => {
       const room = await RoomModal.findById(data.room);
       socket.to(data.room).emit("message", data);
