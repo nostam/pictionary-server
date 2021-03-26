@@ -8,6 +8,7 @@ import {
   removeUserFromRoom,
   updateRoomStatus,
 } from "./shared/rooms";
+
 export default function SocketServer(server: Server) {
   const io = socketio(server);
 
@@ -54,7 +55,12 @@ export default function SocketServer(server: Server) {
         logger.info(`change status request: game ${data.status}`);
         if (data.status !== "ended") {
           // from waiting to start
-          const res = await updateRoomStatus(data.room, data.status);
+          const res = await updateRoomStatus(
+            data.room,
+            data.status,
+            data.difficulty
+          );
+
           if (res) io.in(data.room).emit("roomData", res);
         } else {
           // close game room

@@ -1,6 +1,7 @@
 import RoomModal from "../models/rooms";
 import logger from "./Logger";
-import { IPlayers } from "../shared/constants";
+import { IPlayers, difficulty } from "../shared/constants";
+import DictModal from "../models/dict";
 
 export async function removeUserFromRoom(room: string, sid: string) {
   try {
@@ -30,7 +31,11 @@ export async function addUserToRoom(room: string, sid: string) {
   }
 }
 
-export async function updateRoomStatus(room: string, status: string) {
+export async function updateRoomStatus(
+  room: string,
+  status: string,
+  difficulty: difficulty
+) {
   try {
     if (status !== "ended") {
       // init new game flow
@@ -39,8 +44,9 @@ export async function updateRoomStatus(room: string, status: string) {
       const draw: IPlayers[] = [];
       const guess: IPlayers[] = [];
       const minDraw = 1; //TODO mode
+      const roundTotal = users.length + 2;
       const rand = (n = users!.length) => Math.floor(Math.random() * n);
-      for (let i = 0; i < users.length + 2; i++) {
+      for (let i = 0; i < roundTotal; i++) {
         const drawOnce: IPlayers = { round: i, users: [] };
         const guessOnce: IPlayers = { round: i, users: [] };
 
@@ -56,12 +62,19 @@ export async function updateRoomStatus(room: string, status: string) {
         draw.push(drawOnce);
         guess.push(guessOnce);
       }
-      console.log(draw, guess);
+
+      let dict = await DictModal.findOne({ difficulty });
+      const words: string[] = [];
+      for (let i = 0; i < roundTotal; i++) {
+        words.push(dict!.words[rand(dict!.words.length)]);
+        dict!.words.filter((d) => d !== words[i]);
+      }
       const res = await RoomModal.findByIdAndUpdate(
         room,
-        { status, draw, guess },
+        { status, draw, guess, words },
         { new: true }
       );
+      console.log(res);
       if (res) return res;
     }
   } catch (error) {

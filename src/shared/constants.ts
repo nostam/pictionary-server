@@ -78,14 +78,19 @@ export interface IRoomChat {
 }
 
 export enum difficulty {
-  easy,
-  normal,
-  hard,
-  lunatic,
+  easy = "Easy",
+  normal = "Normal",
+  hard = "Hard",
+  lunatic = "Lunatic",
 }
 
 export interface ICanvas {
   from: string;
   room: string;
   dataURL: string;
+}
+
+export interface IDict extends Document {
+  difficulty: string;
+  words: string[];
 }
