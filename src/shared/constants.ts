@@ -54,13 +54,20 @@ export interface IRoom extends Document {
   // TODO implement after user is created
   creator?: string;
   // users?: IUser[];
-  users?: string[];
-  startedAt: Date;
+  users: string[];
+  draw?: IPlayers[];
+  guess?: IPlayers[];
   endedAt: Date;
   words: string[];
   difficulty: difficulty;
   mode?: string[];
   status: string;
+  round?: string;
+}
+
+export interface IPlayers {
+  round: number;
+  users: string[];
 }
 
 export interface IRoomChat {

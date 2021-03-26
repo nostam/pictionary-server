@@ -6,7 +6,8 @@ export const RoomSchema = new Schema<IRoom>(
     creator: String,
     // users: [{ type: Schema.Types.ObjectId, ref: "users" }],
     users: [String],
-    startedAt: Date,
+    draw: [{ users: [{ type: String }], round: Number }],
+    guess: [{ users: [{ type: String }], round: Number }],
     endedAt: Date,
     words: ["star", "smile"], //TODO update wordlist
     difficulty: String,
