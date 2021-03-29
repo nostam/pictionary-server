@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IRoom } from "../shared/constants";
+import { IRoom } from "../shared/interfaces";
 
 export const RoomSchema = new Schema<IRoom>(
   {

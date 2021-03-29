@@ -2,7 +2,7 @@ import socketio, { Socket } from "socket.io";
 import { Server } from "http";
 import logger from "./shared/Logger";
 import RoomModal from "./models/rooms";
-import { IRoomChat, ICanvas } from "./shared/constants";
+import { IRoomChat, ICanvas } from "./shared/interfaces";
 import {
   addUserToRoom,
   removeUserFromRoom,
@@ -70,7 +70,9 @@ export default function SocketServer(server: Server) {
       }
     });
 
-    socket.on("nextRound", async (data) => {});
+    socket.on("nextRound", async (data) => {
+      logger.warn(`nextRound ${data.round}`);
+    });
 
     socket.on("canvasCoordinates", async (data) => {
       try {

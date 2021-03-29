@@ -1,6 +1,6 @@
 import RoomModal from "../models/rooms";
 import logger from "./Logger";
-import { IPlayers, difficulty } from "../shared/constants";
+import { IPlayers, difficulty } from "../shared/interfaces";
 import DictModal from "../models/dict";
 
 export async function removeUserFromRoom(room: string, sid: string) {

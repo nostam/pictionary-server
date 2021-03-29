@@ -1,7 +1,11 @@
-import { Schema, model, LeanDocument } from "mongoose";
+import { Schema, model, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 // const { defaultAvatar } = require("../../utils/users");
-import { IUser, IResUser } from "../shared/constants";
+import { IUser, IResUser } from "../shared/interfaces";
+
+interface IUserModel extends Model<IUser> {
+  findByCredentials(username: string, pwd: string): IUser;
+}
 
 export const UserSchema = new Schema<IUser>(
   {
@@ -83,6 +87,6 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-const UserModel = model("users", UserSchema);
+const UserModel = model<IUser, IUserModel>("users", UserSchema);
 
 export default UserModel;
