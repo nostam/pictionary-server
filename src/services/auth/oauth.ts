@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
 import UserModel from "../../models/users";
+import { IRequest } from "../../shared/interfaces";
 import { authenticate } from "./index";
 
 passport.use(
@@ -17,7 +18,7 @@ passport.use(
       accessToken: string,
       refreshToken: string,
       profile: Profile,
-      next
+      done
     ) => {
       const newUser = {
         googleId: profile.id,
@@ -32,20 +33,20 @@ passport.use(
 
         if (user) {
           const tokens = await authenticate(user);
-          next(null, { user, tokens });
+          done(null, { user, tokens });
         } else {
           const createdUser = new UserModel(newUser);
           await createdUser.save();
           const tokens = await authenticate(createdUser);
-          next(null, { user: createdUser, tokens });
+          done(null, { user: createdUser, tokens });
         }
       } catch (error) {
-        next(error);
+        done(error);
       }
     }
   )
 );
 
-passport.serializeUser(function (user, next) {
-  next(null, user);
+passport.serializeUser((user, done) => {
+  done(null, user);
 });

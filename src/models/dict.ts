@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IDict } from "../shared/constants";
+import { IDict } from "../shared/interfaces";
 
 export const DictSchema = new Schema<IDict>({
   difficulty: String,

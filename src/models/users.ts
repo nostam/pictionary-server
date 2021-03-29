@@ -4,11 +4,12 @@ import bcrypt from "bcryptjs";
 import { IUser, IResUser } from "../shared/interfaces";
 
 interface IUserModel extends Model<IUser> {
-  findByCredentials(username: string, pwd: string): IUser;
+  findByCredentials(username: string, password: string): IUser;
 }
 
 export const UserSchema = new Schema<IUser>(
   {
+    username: { type: String, required: true, lowercase: true },
     nickname: { type: String },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -63,10 +64,10 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.statics.findByCredentials = async function (
-  email: string,
+  username: string,
   password: string
 ) {
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ username });
   if (user) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) return user;

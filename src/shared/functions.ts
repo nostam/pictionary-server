@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { getReasonPhrase } from "http-status-codes";
-import { IErrMsg } from "./constants";
+import { IErrMsg } from "./interfaces";
 import logger from "./Logger";
 
 export function env(name: string): string {

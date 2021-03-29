@@ -3,14 +3,15 @@ import UserModel from "../../models/users";
 import { APIError } from "../../shared/classes";
 import { JWT_SECRET, REFRESH_JWT_SECRET } from "../../shared/constants";
 import { IUser, IUserLogin } from "../../shared/interfaces";
-import { ObjectId } from "mongoose";
 
 interface IDocId {
-  _id: ObjectId;
+  _id: string;
 }
 
 export async function authenticate(user: IUser) {
   try {
+    if (!user._id) throw new APIError(`Access is forbidden`, 403);
+    console.log(user._id);
     const accessToken = await generateJWT({ _id: user._id });
     const refreshToken = await generateRefreshJWT({ _id: user._id });
 
@@ -26,8 +27,8 @@ export async function authenticate(user: IUser) {
 }
 
 export function generateJWT(payload: IDocId) {
-  return new Promise((res, rej) =>
-    jwt.sign(payload, JWT_SECRET, { expiresIn: 9000 }, (err, token) => {
+  return new Promise<string | undefined>((res, rej) =>
+    jwt.sign(payload, JWT_SECRET, { expiresIn: 900000 }, (err, token) => {
       if (err) rej(err);
       res(token);
     })
@@ -67,13 +68,13 @@ export function verifyRefreshToken(token: string) {
   );
 }
 
-export async function refreshToken(oldRefreshToken: string) {
+export async function getTokenPairs(oldRefreshToken: string) {
   const decoded = (await verifyRefreshToken(oldRefreshToken)) as IUserLogin;
 
   if (!decoded) throw new APIError("Invalid refresh token", 400);
-  const user = await UserModel.findOne({ _id: decoded._id });
+  const user = await UserModel.findById(decoded._id);
 
-  if (!user) throw new APIError(`Access is forbidden`, 403);
+  if (!user || !user._id) throw new APIError(`Access is forbidden`, 403);
   const currentRefreshToken = user.refreshTokens.find(
     (t) => t.token === oldRefreshToken
   );

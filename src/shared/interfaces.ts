@@ -1,9 +1,9 @@
 import { Document, ObjectId } from "mongoose";
-import { Request } from "express";
+import { Request, Express } from "express";
 
 export interface IRequest extends Request {
+  tokens?: { accessToken: string; refreshToken: string };
   token?: string;
-  user?: IUser;
 }
 
 export interface IErrMsg extends Error {
@@ -13,7 +13,8 @@ export interface IErrMsg extends Error {
 }
 
 // Users
-export interface IUser extends Document {
+export interface IUser extends Document, Express.User {
+  _id?: string;
   nickname?: string;
   firstName: string;
   lastName: string;

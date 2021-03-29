@@ -1,11 +1,10 @@
 import "dotenv/config";
 import express from "express";
-// import cors from "cors";
 import helmet from "helmet";
 import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-// import passport from "passport";
+import passport from "passport";
 import { createServer } from "http";
 
 import BaseRouter from "./services";
@@ -23,7 +22,7 @@ app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
 app.use(express.json());
 
 app.use(cookieParser());
-// app.use(passport.initialize());
+app.use(passport.initialize());
 
 app.use(loggerMiddleware);
 app.use("/", BaseRouter);
