@@ -52,6 +52,7 @@ export default function SocketServer(server: Server) {
     // game status events
     socket.on("gameStatus", async (data) => {
       try {
+        console.log(data);
         logger.info(`change status request: game ${data.status}`);
         if (data.status !== "ended") {
           // from waiting to start
@@ -60,7 +61,6 @@ export default function SocketServer(server: Server) {
             data.status,
             data.difficulty
           );
-
           if (res) io.in(data.room).emit("roomData", res);
         } else {
           // close game room
@@ -72,6 +72,7 @@ export default function SocketServer(server: Server) {
 
     socket.on("nextRound", async (data) => {
       logger.warn(`nextRound ${data.round}`);
+      io.in(data.room).emit("newCanvas", "");
     });
 
     socket.on("canvasCoordinates", async (data) => {
@@ -90,12 +91,13 @@ export default function SocketServer(server: Server) {
     });
 
     socket.on("message", async (data: IRoomChat) => {
+      console.log(data);
       const room = await RoomModal.findById(data.room);
       socket.to(data.room).emit("message", data);
-      if (room && room.status === "ongoing") {
+      if (room && room.status === "started") {
         const ans = room.words[data.round];
         if (data.message.split(" ")[0].toLowerCase() === ans.toLowerCase()) {
-          socket.in(data.room).emit("message", {
+          io.in(data.room).emit("message", {
             message: `Correct answers is ${ans}!`,
             from: "SYSTEM",
             round: data.round,

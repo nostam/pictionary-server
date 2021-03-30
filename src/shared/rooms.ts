@@ -37,9 +37,9 @@ export async function updateRoomStatus(
   difficulty: difficulty
 ) {
   try {
-    if (status !== "ended") {
-      // init new game flow
-      const old = await RoomModal.findById(room, { users: 1 });
+    // init new game flow
+    const old = await RoomModal.findById(room, { users: 1, status: 1 });
+    if (status === "started" && old!.status === "waiting") {
       const { users } = old!;
       const draw: IPlayers[] = [];
       const guess: IPlayers[] = [];
