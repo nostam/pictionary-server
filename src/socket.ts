@@ -61,7 +61,10 @@ export default function SocketServer(server: Server) {
             data.status,
             data.difficulty
           );
-          if (res) io.in(data.room).emit("roomData", res);
+          if (res) {
+            io.in(data.room).emit("roomData", res);
+            io.in(data.room).emit("newCanvas", null);
+          }
         } else {
           // close game room
         }
@@ -72,7 +75,7 @@ export default function SocketServer(server: Server) {
 
     socket.on("nextRound", async (data) => {
       logger.warn(`nextRound ${data.round}`);
-      io.in(data.room).emit("newCanvas", "");
+      io.in(data.room).emit("newCanvas", null);
     });
 
     socket.on("canvasCoordinates", async (data) => {
@@ -103,6 +106,7 @@ export default function SocketServer(server: Server) {
             round: data.round,
             room: data.room,
           });
+          io.in(data.room).emit("nextRound", true);
         }
       }
     });
