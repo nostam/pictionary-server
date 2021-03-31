@@ -94,7 +94,6 @@ export default function SocketServer(server: Server) {
     });
 
     socket.on("message", async (data: IRoomChat) => {
-      console.log(data);
       const room = await RoomModal.findById(data.room);
       socket.to(data.room).emit("message", data);
       if (room && room.status === "started") {
@@ -106,7 +105,7 @@ export default function SocketServer(server: Server) {
             round: data.round,
             room: data.room,
           });
-          io.in(data.room).emit("nextRound", true);
+          io.in(data.room).emit("nextRound", null);
         }
       }
     });
