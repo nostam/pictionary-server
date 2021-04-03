@@ -11,13 +11,12 @@ export const UserSchema = new Schema<IUser>(
   {
     username: { type: String, required: true, lowercase: true },
     nickname: { type: String },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
     password: { type: String, required: true },
     email: {
       type: String,
       unique: true,
-      required: [true, "Email address is required"],
       lowercase: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,

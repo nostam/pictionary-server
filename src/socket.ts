@@ -89,8 +89,15 @@ export default function SocketServer(server: Server) {
 
     socket.on("canvasData", async (data: ICanvas) => {
       //TODO mode
-      logger.info(`Canvas size: ${data.dataURL.length}`);
-      socket.in(data.room).emit("canvasData", data);
+      try {
+        socket.in(data.room).emit("canvasData", data);
+        const room = await RoomModal.findByIdAndUpdate(data.room, {
+          canvas: data.dataURL,
+        });
+        if (room) logger.info(`Canvas size: ${data.dataURL.length}`);
+      } catch (error) {
+        logger.err(error);
+      }
     });
 
     socket.on("message", async (data: IRoomChat) => {

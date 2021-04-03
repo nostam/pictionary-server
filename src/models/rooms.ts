@@ -14,6 +14,7 @@ export const RoomSchema = new Schema<IRoom>(
     mode: String,
     status: String,
     round: { type: Number, default: 0 },
+    canvas: String,
   },
   { timestamps: true }
 );
