@@ -13,13 +13,13 @@ export interface IErrMsg extends Error {
 }
 
 // Users
-export interface IUser extends Document, Express.User {
+export interface IUser extends Document {
   _id?: string;
-  nickname?: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
   password: string;
-  email: string;
+  email?: string;
   avatar?: string;
   status?: string;
   desciption?: string;
@@ -30,10 +30,10 @@ export interface IUser extends Document, Express.User {
 }
 
 export interface IResUser extends Document {
-  nickname?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  username: string;
+  email?: string;
   avatar?: string;
   status?: string;
   desciption?: string;

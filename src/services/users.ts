@@ -21,7 +21,6 @@ usersRouter.post("/login", async (req, res, next) => {
     res
       .cookie("accessToken", accessToken, accessTokenOptions)
       .cookie("refreshToken", refreshToken, refreshTokenOptions)
-      .status(201)
       .send("Welcome back");
   } catch (error) {
     console.log(error);

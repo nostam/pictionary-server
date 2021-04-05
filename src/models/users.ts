@@ -10,7 +10,6 @@ interface IUserModel extends Model<IUser> {
 export const UserSchema = new Schema<IUser>(
   {
     username: { type: String, required: true, lowercase: true },
-    nickname: { type: String },
     firstName: { type: String },
     lastName: { type: String },
     password: { type: String, required: true },

@@ -1,6 +1,6 @@
 import RoomModal from "../models/rooms";
 import logger from "./Logger";
-import { IPlayers, difficulty } from "../shared/interfaces";
+import { IPlayers, difficulty, IResUser } from "../shared/interfaces";
 import DictModal from "../models/dict";
 
 export async function removeUserFromRoom(room: string, sid: string) {
@@ -16,15 +16,37 @@ export async function removeUserFromRoom(room: string, sid: string) {
   }
 }
 
-export async function addUserToRoom(room: string, sid: string) {
+export async function addUserToRoom(
+  room: string,
+  sid: string,
+  user?: IResUser
+) {
   try {
-    const res = await RoomModal.findByIdAndUpdate(
-      room,
-      {
-        $push: { users: sid },
-      },
-      { new: true }
-    );
+    let res;
+    if (user) {
+      res = await RoomModal.findByIdAndUpdate(
+        room,
+        {
+          $push: {
+            _id: user._id,
+            username: user.username,
+            avatar: user.avatar,
+            socketId: sid,
+          },
+        },
+        { new: true }
+      );
+    } else {
+      res = await RoomModal.findByIdAndUpdate(
+        room,
+        {
+          $push: {
+            socketId: sid,
+          },
+        },
+        { new: true }
+      );
+    }
     if (res) return res;
   } catch (error) {
     logger.err(error);
