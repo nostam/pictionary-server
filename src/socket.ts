@@ -18,10 +18,11 @@ export default function SocketServer(server: Server) {
     socket.on("joinRoom", async ({ room, user }) => {
       try {
         socket.join(room);
+        console.log(user);
         logger.info(`${user ? user : socket.id} joined ${room}`);
         const msgToRoomMembers = {
           from: "SYSTEM",
-          message: `${user ? user : socket.id} joined`,
+          message: `${user ? user.username : socket.id} joined`,
           room,
         };
         socket.to(room).emit("message", msgToRoomMembers);

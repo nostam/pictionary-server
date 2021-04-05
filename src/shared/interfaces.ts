@@ -18,7 +18,7 @@ export interface IUser extends Document {
   username: string;
   firstName?: string;
   lastName?: string;
-  password: string;
+  password?: string;
   email?: string;
   avatar?: string;
   status?: string;
@@ -26,7 +26,7 @@ export interface IUser extends Document {
   role?: string;
   googleId?: string;
   socketId?: string;
-  refreshTokens: RefreshToken[];
+  refreshTokens?: RefreshToken[];
 }
 
 export interface IResUser extends Document {

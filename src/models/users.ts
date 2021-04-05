@@ -1,7 +1,7 @@
 import { Schema, model, Model } from "mongoose";
 import bcrypt from "bcryptjs";
-// const { defaultAvatar } = require("../../utils/users");
-import { IUser, IResUser } from "../shared/interfaces";
+const { defaultAvatar } = require("../shared/users");
+import { IUser } from "../shared/interfaces";
 
 interface IUserModel extends Model<IUser> {
   findByCredentials(username: string, password: string): IUser;
@@ -9,20 +9,20 @@ interface IUserModel extends Model<IUser> {
 
 export const UserSchema = new Schema<IUser>(
   {
-    username: { type: String, required: true, lowercase: true },
+    username: { type: String, required: true, lowercase: true, unique: true },
     firstName: { type: String },
     lastName: { type: String },
     password: { type: String, required: true },
     email: {
       type: String,
-      unique: true,
       lowercase: true,
+      unique: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email address",
       ],
       validate: {
-        validator: async function (email: string) {
+        validator: async function (email: string | undefined) {
           const user = await UserModel.findOne({ email }); //this.constructor
           if (user && user.email === email) return true;
           return !user ? true : false;
@@ -50,15 +50,11 @@ UserSchema.virtual("fullName").get(function (this: IUser) {
 });
 
 UserSchema.methods.toJSON = function () {
-  const user: IResUser = this;
+  const user = this;
   const userObject = user.toObject();
-  //   function del(userObject: IResUser) {
-  //     delete userObject.password;
-  //     delete userObject.__v;
-  //     delete userObject.refreshTokens;
-  //   }
-  //   del(userObject);
-  return userObject as IResUser;
+  delete userObject.password;
+  delete userObject.refreshTokens;
+  return userObject;
 };
 
 UserSchema.statics.findByCredentials = async function (
@@ -66,7 +62,7 @@ UserSchema.statics.findByCredentials = async function (
   password: string
 ) {
   const user = await this.findOne({ username });
-  if (user) {
+  if (user && user.password) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) return user;
     else return null;
@@ -77,10 +73,10 @@ UserSchema.statics.findByCredentials = async function (
 
 UserSchema.pre("save", async function (next) {
   const user = this;
-  const plainPW = user.password;
+  const plainPW = user.password!;
   if (user.avatar === undefined)
     if (user.isModified("password")) {
-      // user.avatar = defaultAvatar(user.firstName, user.lastName);
+      user.avatar = defaultAvatar(user.username);
       user.password = await bcrypt.hash(plainPW, 10);
     }
   next();

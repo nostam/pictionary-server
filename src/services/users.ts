@@ -21,7 +21,7 @@ usersRouter.post("/login", async (req, res, next) => {
     res
       .cookie("accessToken", accessToken, accessTokenOptions)
       .cookie("refreshToken", refreshToken, refreshTokenOptions)
-      .send("Welcome back");
+      .send({ user });
   } catch (error) {
     console.log(error);
     next(error);
@@ -61,7 +61,7 @@ usersRouter.post("/logout", authorize, async (req: IRequest, res, next) => {
   try {
     const user = req.user as IUser;
     if (!user) throw new APIError("Unauthorized", 403);
-    user.refreshTokens = user.refreshTokens.filter(
+    user.refreshTokens = user.refreshTokens!.filter(
       (t) => t.token !== req.cookies.refreshTokens
     );
     await user.save();

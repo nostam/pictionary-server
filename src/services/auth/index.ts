@@ -17,7 +17,7 @@ export async function authenticate(user: IUser) {
 
     if (!accessToken || !refreshToken)
       throw new Error("Failed to generate tokens");
-    user.refreshTokens = user.refreshTokens.concat({ token: refreshToken });
+    user.refreshTokens = user.refreshTokens!.concat({ token: refreshToken });
 
     await user.save();
     return { accessToken, refreshToken };
@@ -75,7 +75,7 @@ export async function getTokenPairs(oldRefreshToken: string) {
   const user = await UserModel.findById(decoded._id);
 
   if (!user || !user._id) throw new APIError(`Access is forbidden`, 403);
-  const currentRefreshToken = user.refreshTokens.find(
+  const currentRefreshToken = user.refreshTokens!.find(
     (t) => t.token === oldRefreshToken
   );
 
@@ -84,8 +84,8 @@ export async function getTokenPairs(oldRefreshToken: string) {
   const refreshToken = await generateRefreshJWT({ _id: user._id });
 
   if (!refreshToken || !accessToken) throw new Error("Fail to generate Tokens");
-  const newRefreshTokens = user.refreshTokens
-    .filter((t) => t.token !== oldRefreshToken)
+  const newRefreshTokens = user
+    .refreshTokens!.filter((t) => t.token !== oldRefreshToken)
     .concat({ token: refreshToken });
   user.refreshTokens = [...newRefreshTokens];
 

@@ -32,7 +32,7 @@ router.get("/", async (req, res, next) => {
       status: "waiting",
       createdAt: { $gte: new Date().getTime() - 1000 * 60 * 60 },
     });
-    res.send(roomList);
+    res.send({ rooms: roomList });
   } catch (error) {
     next(error);
   }
