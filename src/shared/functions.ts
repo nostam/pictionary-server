@@ -25,10 +25,11 @@ export const httpErrorHandler: ErrorRequestHandler = (
   next
 ) => {
   logger.err(err, true);
+  const status = err.status ?? 500;
   if (!res.headersSent) {
-    return res.status((err.status = 500)).send({
-      error: err.message ? err.message : getReasonPhrase((err.status = 500)),
+    return res.status(status).send({
+      error: err.message ? err.message : getReasonPhrase(status),
     });
   }
-  return res.status(500).send(getReasonPhrase((err.status = 500)));
+  return res.status(status).send(getReasonPhrase(status));
 };
