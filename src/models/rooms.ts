@@ -6,10 +6,10 @@ export const RoomSchema = new Schema<IRoom>(
     creator: String,
     users: [
       {
-        socketId: String,
-        _id: Schema.Types.ObjectId,
-        username: String,
-        avatar: String,
+        socketId: { type: String, required: true },
+        _id: { type: Schema.Types.ObjectId },
+        username: { type: String },
+        avatar: { type: String },
       },
     ],
     draw: [{ users: [{ type: String }], round: Number }],
@@ -18,7 +18,7 @@ export const RoomSchema = new Schema<IRoom>(
     words: [String],
     difficulty: String,
     mode: String,
-    status: String,
+    status: { type: String, default: "waiting" },
     round: { type: Number, default: 0 },
     canvas: String,
   },

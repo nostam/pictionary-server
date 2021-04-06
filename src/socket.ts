@@ -18,18 +18,21 @@ export default function SocketServer(server: Server) {
     socket.on("joinRoom", async ({ room, user }) => {
       try {
         socket.join(room);
-        console.log(user);
-        logger.info(`${user ? user : socket.id} joined ${room}`);
+        logger.info(`${user ? user.username : socket.id} joined ${room}`);
         const msgToRoomMembers = {
           from: "SYSTEM",
           message: `${user ? user.username : socket.id} joined`,
           room,
         };
         socket.to(room).emit("message", msgToRoomMembers);
+
         const res = await addUserToRoom(room, socket.id, user);
-        if (res) socket.in(room).emit("roomData", res);
+        if (res) {
+          socket.in(room).emit("roomData", res);
+          socket.to(socket.id).emit("canvasData", res.canvas!);
+        }
       } catch (error) {
-        logger.err(error);
+        logger.err(error, true);
       }
     });
 

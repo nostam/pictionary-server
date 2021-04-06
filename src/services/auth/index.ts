@@ -22,7 +22,7 @@ export async function authenticate(user: IUser) {
     await user.save();
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new APIError(error.message, 500);
+    throw new APIError(error.message, 400);
   }
 }
 

@@ -1,13 +1,13 @@
 import RoomModal from "../models/rooms";
 import logger from "./Logger";
-import { IPlayers, difficulty, IResUser } from "../shared/interfaces";
+import { IPlayers, difficulty, IUser } from "../shared/interfaces";
 import DictModal from "../models/dict";
 
 export async function removeUserFromRoom(room: string, sid: string) {
   try {
     const res = await RoomModal.findByIdAndUpdate(
       room,
-      { $pull: { users: sid } },
+      { $pull: { users: { socketId: sid } } },
       { new: true }
     );
     if (res) return res;
@@ -16,36 +16,22 @@ export async function removeUserFromRoom(room: string, sid: string) {
   }
 }
 
-export async function addUserToRoom(
-  room: string,
-  sid: string,
-  user?: IResUser
-) {
+export async function addUserToRoom(room: string, sid: string, user?: IUser) {
   try {
-    let res;
+    const res = await RoomModal.findById(room);
     if (user) {
-      res = await RoomModal.findByIdAndUpdate(
-        room,
-        {
-          $push: {
-            _id: user._id,
-            username: user.username,
-            avatar: user.avatar,
-            socketId: sid,
-          },
-        },
-        { new: true }
-      );
+      const newPlayer = {
+        _id: user._id as string,
+        username: user.username,
+        avatar: user.avatar!,
+        socketId: sid,
+      };
+      res!.users.push(newPlayer);
+      res!.save();
     } else {
-      res = await RoomModal.findByIdAndUpdate(
-        room,
-        {
-          $push: {
-            socketId: sid,
-          },
-        },
-        { new: true }
-      );
+      const newGuest = { socketId: sid };
+      res!.users.push(newGuest);
+      res!.save();
     }
     if (res) return res;
   } catch (error) {

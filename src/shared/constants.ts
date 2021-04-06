@@ -18,3 +18,7 @@ export const refreshTokenOptions: CookieOptions = {
   secure: true,
   maxAge: 604800000,
 };
+export const rmbOptions: CookieOptions = {
+  path: "/",
+  sameSite: "none",
+};

@@ -1,7 +1,11 @@
 import { Request, Response, Router } from "express";
 import passport from "passport";
 import UserModel from "../models/users";
-import { accessTokenOptions, refreshTokenOptions } from "../shared/constants";
+import {
+  accessTokenOptions,
+  refreshTokenOptions,
+  rmbOptions,
+} from "../shared/constants";
 import { authenticate, getTokenPairs } from "./auth";
 import { authorize } from "./auth/middlewares";
 import { APIError } from "../shared/classes";
@@ -15,11 +19,11 @@ usersRouter.post("/login", async (req, res, next) => {
     const user = await UserModel.findByCredentials(username, password);
     const { accessToken, refreshToken } = await authenticate(user);
     res
+      .cookie("rmb", true, rmbOptions)
       .cookie("accessToken", accessToken, accessTokenOptions)
       .cookie("refreshToken", refreshToken, refreshTokenOptions)
       .send({ user });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });
@@ -43,7 +47,9 @@ usersRouter.post("/refreshToken", async (req, res, next) => {
       const { accessToken, refreshToken } = await getTokenPairs(
         oldRefreshToken
       );
+
       res
+        .cookie("rmb", true, rmbOptions)
         .cookie("accessToken", accessToken, accessTokenOptions)
         .cookie("refreshToken", refreshToken, refreshTokenOptions)
         .send("renewed");
@@ -62,8 +68,13 @@ usersRouter.post("/logout", authorize, async (req: IRequest, res, next) => {
     );
     await user.save();
     res
-      .clearCookie("accessToken", { path: "/" })
-      .clearCookie("refreshToken", { path: "/users/refreshToken" })
+      .clearCookie("rmb", { path: "/" })
+      .clearCookie("accessToken", { path: "/", sameSite: "none", secure: true })
+      .clearCookie("refreshToken", {
+        path: "/users/refreshToken",
+        sameSite: "none",
+        secure: true,
+      })
       .send();
   } catch (err) {
     next(err);
@@ -78,8 +89,13 @@ usersRouter.post("/logoutAll", authorize, async (req: IRequest, res, next) => {
     user.refreshTokens = [];
     await user.save();
     res
-      .clearCookie("accessToken", { path: "/" })
-      .clearCookie("refreshToken", { path: "/users/refreshToken" })
+      .clearCookie("rmb", { path: "/" })
+      .clearCookie("accessToken", { path: "/", sameSite: "none", secure: true })
+      .clearCookie("refreshToken", {
+        path: "/users/refreshToken",
+        sameSite: "none",
+        secure: true,
+      })
       .send();
   } catch (err) {
     next(err);
@@ -99,6 +115,7 @@ usersRouter.get(
       const myReq = req.user as IRequest;
       if (!myReq.tokens) throw new Error("Failed to authenticate");
       res
+        .cookie("rmb", true, rmbOptions)
         .cookie("accessToken", myReq.tokens.accessToken, accessTokenOptions)
         .cookie("refreshToken", myReq.tokens.refreshToken, refreshTokenOptions)
         .redirect(`${process.env.FE_URL_PROD}`);

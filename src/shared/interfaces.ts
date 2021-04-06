@@ -14,7 +14,6 @@ export interface IErrMsg extends Error {
 
 // Users
 export interface IUser extends Document {
-  _id?: string;
   username: string;
   firstName?: string;
   lastName?: string;
@@ -53,10 +52,11 @@ export interface IUserLogin extends Document {
 
 // Room / Game
 export interface IRoom extends Document {
+  canvas?: string;
   // TODO implement after user is created
   creator?: string;
   // users?: IUser[];
-  users: string[];
+  users: IEmbedUser[];
   draw?: IPlayers[];
   guess?: IPlayers[];
   endedAt: Date;
@@ -67,9 +67,15 @@ export interface IRoom extends Document {
   round?: string;
 }
 
+export interface IEmbedUser {
+  _id?: string;
+  username?: string;
+  socketId: string;
+  avatar?: string;
+}
 export interface IPlayers {
   round: number;
-  users: string[];
+  users: IEmbedUser[];
 }
 
 export interface IRoomChat {
