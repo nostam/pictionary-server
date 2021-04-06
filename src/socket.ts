@@ -29,7 +29,11 @@ export default function SocketServer(server: Server) {
         const res = await addUserToRoom(room, socket.id, user);
         if (res) {
           socket.in(room).emit("roomData", res);
-          socket.to(socket.id).emit("canvasData", res.canvas!);
+          io.to(socket.id).emit("canvasData", {
+            from: "SYSTEM",
+            room,
+            dataURL: res.canvas,
+          });
         }
       } catch (error) {
         logger.err(error, true);
