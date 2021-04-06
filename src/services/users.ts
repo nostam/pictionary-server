@@ -9,10 +9,6 @@ import { IRequest, IUser } from "../shared/interfaces";
 
 const usersRouter = Router();
 
-usersRouter.get("/all", async (req: Request, res: Response) => {
-  res.status(201).send("Hello Test");
-});
-
 usersRouter.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;

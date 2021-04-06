@@ -96,3 +96,9 @@ export interface IDict extends Document {
   difficulty: string;
   words: string[];
 }
+
+export interface ITokenVerify {
+  _id: string;
+  iat: number;
+  exp: number;
+}

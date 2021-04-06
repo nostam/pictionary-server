@@ -9,11 +9,12 @@ export const accessTokenOptions: CookieOptions = {
   path: "/",
   sameSite: "none",
   secure: true,
+  maxAge: 900000,
 };
 export const refreshTokenOptions: CookieOptions = {
   httpOnly: true,
   path: "/users/refreshToken",
-
   sameSite: "none",
   secure: true,
+  maxAge: 604800000,
 };

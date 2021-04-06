@@ -28,7 +28,7 @@ export async function authenticate(user: IUser) {
 
 export function generateJWT(payload: IDocId) {
   return new Promise<string | undefined>((res, rej) =>
-    jwt.sign(payload, JWT_SECRET, { expiresIn: 900000 }, (err, token) => {
+    jwt.sign(payload, JWT_SECRET, { expiresIn: "15 min" }, (err, token) => {
       if (err) rej(err);
       res(token);
     })
@@ -36,9 +36,9 @@ export function generateJWT(payload: IDocId) {
 }
 
 export function verifyJWT(token: string) {
-  return new Promise((res, rej) => {
+  return new Promise<object | undefined>((res, rej) => {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      console.log("decoded: ", decoded);
+      console.log("decoded: ", decoded, err);
       if (err) rej(err);
       res(decoded);
     });
