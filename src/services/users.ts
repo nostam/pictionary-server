@@ -61,7 +61,10 @@ usersRouter.post("/logout", authorize, async (req: IRequest, res, next) => {
       (t) => t.token !== req.cookies.refreshTokens
     );
     await user.save();
-    res.clearCookie("accessToken").clearCookie("refreshToken").send();
+    res
+      .clearCookie("accessToken", { path: "/" })
+      .clearCookie("refreshToken", { path: "/users/refreshToken" })
+      .send();
   } catch (err) {
     next(err);
   }
@@ -74,7 +77,10 @@ usersRouter.post("/logoutAll", authorize, async (req: IRequest, res, next) => {
 
     user.refreshTokens = [];
     await user.save();
-    res.clearCookie("accessToken").clearCookie("refreshToken").send();
+    res
+      .clearCookie("accessToken", { path: "/" })
+      .clearCookie("refreshToken", { path: "/users/refreshToken" })
+      .send();
   } catch (err) {
     next(err);
   }
