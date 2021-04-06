@@ -38,7 +38,7 @@ export function generateJWT(payload: IDocId) {
 export function verifyJWT(token: string) {
   return new Promise<object | undefined>((res, rej) => {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      console.log("decoded: ", decoded, err);
+      console.log("decoded: ", decoded);
       if (err) rej(err);
       res(decoded);
     });
