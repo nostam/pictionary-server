@@ -1,19 +1,20 @@
 import { Schema, model } from "mongoose";
 import { IRoom } from "../shared/interfaces";
 
+const embedUser = new Schema({
+  socketId: { type: String, required: true },
+  _id: { type: Schema.Types.ObjectId },
+  username: { type: String },
+  avatar: { type: String },
+  point: { type: Number },
+});
+
 export const RoomSchema = new Schema<IRoom>(
   {
     creator: String,
-    users: [
-      {
-        socketId: { type: String, required: true },
-        _id: { type: Schema.Types.ObjectId },
-        username: { type: String },
-        avatar: { type: String },
-      },
-    ],
-    draw: [{ users: [{ type: String }], round: Number }],
-    guess: [{ users: [{ type: String }], round: Number }],
+    users: [embedUser],
+    draw: [{ users: [embedUser], round: Number }],
+    guess: [{ users: [embedUser], round: Number }],
     endedAt: Date,
     words: [String],
     difficulty: String,

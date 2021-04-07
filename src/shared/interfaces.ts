@@ -55,7 +55,6 @@ export interface IRoom extends Document {
   canvas?: string;
   // TODO implement after user is created
   creator?: string;
-  // users?: IUser[];
   users: IEmbedUser[];
   draw?: IPlayers[];
   guess?: IPlayers[];
@@ -72,6 +71,7 @@ export interface IEmbedUser {
   username?: string;
   socketId: string;
   avatar?: string;
+  point?: number;
 }
 export interface IPlayers {
   round: number;
