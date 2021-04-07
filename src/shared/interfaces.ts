@@ -108,3 +108,8 @@ export interface ITokenVerify {
   iat: number;
   exp: number;
 }
+
+export interface IRoomBell {
+  room: string;
+  user: IUser;
+}

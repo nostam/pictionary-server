@@ -2,7 +2,7 @@ import socketio, { Socket } from "socket.io";
 import { Server } from "http";
 import logger from "./shared/Logger";
 import RoomModal from "./models/rooms";
-import { IRoomChat, ICanvas } from "./shared/interfaces";
+import { IRoomChat, ICanvas, IRoomBell, IEmbedUser } from "./shared/interfaces";
 import {
   addUserToRoom,
   removeUserFromRoom,
@@ -15,13 +15,13 @@ export default function SocketServer(server: Server) {
   io.on("connection", (socket: Socket) => {
     socket.to(socket.id).emit(socket.id);
     logger.imp("connection established: " + socket.id);
-    socket.on("joinRoom", async ({ room, user }) => {
+    socket.on("joinRoom", async ({ room, user }: IRoomBell) => {
       try {
         socket.join(room);
         logger.info(`${user ? user.username : socket.id} joined ${room}`);
         const msgToRoomMembers = {
           from: "SYSTEM",
-          message: `${user ? user.username : socket.id} joined`,
+          message: `${user.username} has joined`,
           room,
         };
         socket.to(room).emit("message", msgToRoomMembers);
@@ -40,11 +40,11 @@ export default function SocketServer(server: Server) {
       }
     });
 
-    socket.on("leaveRoom", async (room: string) => {
+    socket.on("leaveRoom", async ({ room, user }: IRoomBell) => {
       logger.imp(`${socket.id} left ${room}`);
       socket.in(room).emit("message", {
         from: "SYSTEM",
-        message: `${socket.id} has left`,
+        message: `${user.username} has left`,
         room,
       });
       const res = await removeUserFromRoom(room, socket.id);
