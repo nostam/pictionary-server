@@ -86,6 +86,12 @@ export default function SocketServer(server: Server) {
       io.in(data.room).emit("newCanvas", null);
     });
 
+    socket.on("newCanvas", async (room: string) => {
+      io.in(room).emit("newCanvas", null);
+      const res = await RoomModal.findByIdAndUpdate(room, {
+        canvas: undefined,
+      });
+    });
     socket.on("canvasCoordinates", async (data) => {
       try {
         logger.info(data);
