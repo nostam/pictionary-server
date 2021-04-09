@@ -26,6 +26,7 @@ export interface IUser extends Document {
   googleId?: string;
   socketId?: string;
   refreshTokens?: RefreshToken[];
+  point: number;
 }
 
 export interface IResUser extends Document {

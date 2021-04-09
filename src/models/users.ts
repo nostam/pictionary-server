@@ -41,6 +41,7 @@ export const UserSchema = new Schema<IUser>(
     googleId: String,
     socketId: String,
     refreshTokens: [{ token: { type: String } }],
+    point: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
