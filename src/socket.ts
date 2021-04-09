@@ -48,6 +48,7 @@ export default function SocketServer(server: Server) {
         room,
       });
       const res = await removeUserFromRoom(room, socket.id);
+      console.log(res);
       if (res) {
         socket.in(room).emit("roomData", res);
       }
@@ -62,19 +63,15 @@ export default function SocketServer(server: Server) {
       try {
         console.log(data);
         logger.info(`change status request: game ${data.status}`);
-        if (data.status !== "ended") {
-          // from waiting to start
-          const res = await updateRoomStatus(
-            data.room,
-            data.status,
-            data.difficulty
-          );
-          if (res) {
-            io.in(data.room).emit("roomData", res);
-            io.in(data.room).emit("newCanvas", null);
-          }
-        } else {
-          // close game room
+        console.log(data);
+        const res = await updateRoomStatus(
+          data.room,
+          data.status,
+          data.difficulty
+        );
+        if (data.status !== "ended" && res) {
+          io.in(data.room).emit("roomData", res);
+          io.in(data.room).emit("newCanvas", null);
         }
       } catch (error) {
         logger.err(error);
