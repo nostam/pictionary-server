@@ -5,6 +5,8 @@ import { IUser } from "../shared/interfaces";
 
 interface IUserModel extends Model<IUser> {
   findByCredentials(username: string, password: string): IUser;
+  addPoint(id: string, score: number): IUser;
+  updateUserSocketId(id: string, socketId: string): IUser;
 }
 
 export const UserSchema = new Schema<IUser>(
@@ -70,6 +72,14 @@ UserSchema.statics.findByCredentials = async function (
   } else {
     return null;
   }
+};
+
+UserSchema.statics.addPoint = async function (id: string, score: number) {
+  const user = await this.findById(id);
+  if (!user) return null;
+  user.point += score;
+  user.save();
+  return null;
 };
 
 UserSchema.pre("save", async function (next) {

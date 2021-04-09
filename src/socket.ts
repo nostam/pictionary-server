@@ -7,6 +7,8 @@ import {
   addUserToRoom,
   removeUserFromRoom,
   updateRoomStatus,
+  updateCanvas,
+  addUsersPoints,
 } from "./shared/rooms";
 
 export default function SocketServer(server: Server) {
@@ -48,7 +50,6 @@ export default function SocketServer(server: Server) {
         room,
       });
       const res = await removeUserFromRoom(room, socket.id);
-      console.log(res);
       if (res) {
         socket.in(room).emit("roomData", res);
       }
@@ -61,14 +62,13 @@ export default function SocketServer(server: Server) {
     // game status events
     socket.on("gameStatus", async (data) => {
       try {
-        console.log(data);
         logger.info(`change status request: game ${data.status}`);
-        console.log(data);
         const res = await updateRoomStatus(
           data.room,
           data.status,
           data.difficulty
         );
+
         if (data.status !== "ended" && res) {
           io.in(data.room).emit("roomData", res);
           io.in(data.room).emit("newCanvas", null);
@@ -85,9 +85,7 @@ export default function SocketServer(server: Server) {
 
     socket.on("newCanvas", async (room: string) => {
       io.in(room).emit("newCanvas", null);
-      const res = await RoomModal.findByIdAndUpdate(room, {
-        canvas: undefined,
-      });
+      const res = await updateCanvas(room, undefined);
     });
     socket.on("canvasCoordinates", async (data) => {
       try {
@@ -102,9 +100,7 @@ export default function SocketServer(server: Server) {
       //TODO mode
       try {
         socket.in(data.room).emit("canvasData", data);
-        const room = await RoomModal.findByIdAndUpdate(data.room, {
-          canvas: data.dataURL,
-        });
+        const room = await updateCanvas(data.room, data.dataURL);
         if (room) logger.info(`Canvas size: ${data.dataURL.length}`);
       } catch (error) {
         logger.err(error);
@@ -123,7 +119,18 @@ export default function SocketServer(server: Server) {
             round: data.round,
             room: data.room,
           });
-          io.in(data.room).emit("nextRound", null);
+          if (room!.draw!.length !== data.round) {
+            io.in(data.room).emit("nextRound", null);
+            io.in(data.room).emit("newCanvas", null);
+          } else {
+            io.in(data.room).emit("roomData", { ...room, status: "ended" });
+            const end = await updateRoomStatus(
+              data.room,
+              (status = "ended"),
+              room.difficulty
+            );
+          }
+          const res = await addUsersPoints(data.room, data.from, data.round);
         }
       }
     });

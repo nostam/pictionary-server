@@ -6,7 +6,7 @@ const embedUser = new Schema({
   _id: { type: Schema.Types.ObjectId },
   username: { type: String },
   avatar: { type: String },
-  point: { type: Number },
+  point: { type: Number, default: 0 },
 });
 
 export const RoomSchema = new Schema<IRoom>(
