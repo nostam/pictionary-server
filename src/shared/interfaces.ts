@@ -19,14 +19,15 @@ export interface IUser extends Document {
   lastName?: string;
   password?: string;
   email?: string;
-  avatar?: string;
+  avatar: string;
   status?: string;
   desciption?: string;
-  role?: string;
+  role: string;
   googleId?: string;
   socketId?: string;
   refreshTokens?: RefreshToken[];
   point: number;
+  color?: IPalette;
 }
 
 export interface IResUser extends Document {
@@ -113,4 +114,9 @@ export interface ITokenVerify {
 export interface IRoomBell {
   room: string;
   user: IUser;
+}
+
+export interface IPalette {
+  primary: string;
+  secondary: string;
 }
