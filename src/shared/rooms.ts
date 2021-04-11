@@ -28,12 +28,9 @@ export async function addUserToRoom(room: string, sid: string, user?: IUser) {
         socketId: sid,
         point: 0,
       };
-      console.log(res.users);
-      const i = res.users.findIndex((u) => u._id === user._id);
+      const i = res.users.findIndex((u) => u.username === user.username);
       if (i < 0) res.users.push(newPlayer);
       else res.users[i] = { ...newPlayer };
-      console.log(i, res.users);
-      // res.users.push(newPlayer);
       res.save();
     } else {
       const newGuest: IEmbedUser = { socketId: sid, point: 0 };
