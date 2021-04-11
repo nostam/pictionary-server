@@ -44,6 +44,7 @@ export const UserSchema = new Schema<IUser>(
     socketId: String,
     refreshTokens: [{ token: { type: String } }],
     point: { type: Number, default: 0 },
+    color: { primary: String, secondary: String },
   },
   { timestamps: true }
 );

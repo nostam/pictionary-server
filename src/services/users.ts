@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import passport from "passport";
-import UserModel from "../models/users";
+import UserModal from "../models/users";
 import {
   accessTokenOptions,
   refreshTokenOptions,
@@ -16,7 +16,7 @@ const usersRouter = Router();
 usersRouter.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await UserModel.findByCredentials(username, password);
+    const user = await UserModal.findByCredentials(username, password);
     const { accessToken, refreshToken } = await authenticate(user);
     res
       .cookie("rmb", true, rmbOptions)
@@ -30,7 +30,7 @@ usersRouter.post("/login", async (req, res, next) => {
 
 usersRouter.post("/register", async (req, res, next) => {
   try {
-    const newUser = new UserModel(req.body);
+    const newUser = new UserModal(req.body);
     const { _id } = await newUser.save();
     res.status(201).send(_id);
   } catch (error) {
@@ -133,4 +133,16 @@ usersRouter.get("/me", authorize, async (req, res, next) => {
   }
 });
 
+usersRouter.put("/update", authorize, async (req, res, next) => {
+  try {
+    const user = req.user as IUser;
+    if (!user) throw new APIError("Unauthorized", 403);
+    const data = await UserModal.findByIdAndUpdate(user._id, req.body, {
+      new: true,
+    });
+    if (data) res.status(201).send("OK");
+  } catch (error) {
+    next(error);
+  }
+});
 export default usersRouter;
