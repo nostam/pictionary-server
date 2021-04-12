@@ -133,6 +133,17 @@ usersRouter.get("/me", authorize, async (req, res, next) => {
   }
 });
 
+usersRouter.get("/rank", authorize, async (req, res, next) => {
+  try {
+    const data = await UserModal.find({}, { _id: 1, point: 1 }).sort({
+      point: -1,
+    });
+    res.send(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
 usersRouter.put("/update", authorize, async (req, res, next) => {
   try {
     const user = req.user as IUser;
