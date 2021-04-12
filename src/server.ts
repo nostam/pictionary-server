@@ -17,7 +17,7 @@ const port = Number(process.env.PORT || 3001);
 const httpServer = createServer(app);
 SocketServer(httpServer);
 
-// app.use(helmet());
+app.use(helmet());
 app.use(cors({ credentials: true, origin: process.env.FE_URL_PROD }));
 app.use(express.json());
 
