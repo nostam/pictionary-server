@@ -1,6 +1,6 @@
 import { Schema, model, Model } from "mongoose";
 import bcrypt from "bcryptjs";
-const { defaultAvatar } = require("../shared/users");
+import { defaultAvatar } from "../shared/users";
 import { IUser } from "../shared/interfaces";
 
 interface IUserModel extends Model<IUser> {
