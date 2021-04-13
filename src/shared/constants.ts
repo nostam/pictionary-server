@@ -7,8 +7,8 @@ export const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET!;
 
 const DynCookiesCfg = () => {
   return {
-    sameSite: env("env") === "development" ? true : "none",
-    secure: env("env") === "development" ? false : true,
+    sameSite: env("NODE_ENV") === "development" ? true : "none",
+    secure: env("NODE_ENV") === "development" ? false : true,
   };
 };
 
