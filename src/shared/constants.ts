@@ -8,18 +8,18 @@ export const accessTokenOptions: CookieOptions = {
   httpOnly: true,
   path: "/",
   maxAge: 900000,
-  sameSite: "none",
-  secure: true,
+  sameSite: process.env.NODE_ENV === "development" ? undefined : "none",
+  secure: process.env.NODE_ENV === "development" ? undefined : true,
 };
 export const refreshTokenOptions: CookieOptions = {
   httpOnly: true,
   path: "/users/refreshToken",
   maxAge: 604800000,
-  sameSite: "none",
-  secure: true,
+  sameSite: process.env.NODE_ENV === "development" ? undefined : "none",
+  secure: process.env.NODE_ENV === "development" ? undefined : true,
 };
 export const rmbOptions: CookieOptions = {
   path: "/",
-  sameSite: "none",
-  secure: true,
+  sameSite: process.env.NODE_ENV === "development" ? undefined : "none",
+  secure: process.env.NODE_ENV === "development" ? undefined : true,
 };
