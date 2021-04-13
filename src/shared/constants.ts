@@ -1,30 +1,25 @@
 import { CookieOptions } from "express";
-import { env } from "../shared/functions";
+
 export const JWT_SECRET = process.env.JWT_SECRET!;
 export const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET!;
 
 // ovewrite is true by default
-
-const DynCookiesCfg = () => {
-  return {
-    sameSite: env("NODE_ENV") === "development" ? true : "none",
-    secure: env("NODE_ENV") === "development" ? false : true,
-  };
-};
-
 export const accessTokenOptions: CookieOptions = {
   httpOnly: true,
   path: "/",
   maxAge: 900000,
-  ...DynCookiesCfg,
+  sameSite: "none",
+  secure: true,
 };
 export const refreshTokenOptions: CookieOptions = {
   httpOnly: true,
   path: "/users/refreshToken",
   maxAge: 604800000,
-  ...DynCookiesCfg,
+  sameSite: "none",
+  secure: true,
 };
 export const rmbOptions: CookieOptions = {
   path: "/",
-  ...DynCookiesCfg,
+  sameSite: "none",
+  secure: true,
 };
