@@ -68,13 +68,9 @@ usersRouter.post("/logout", authorize, async (req: IRequest, res, next) => {
     );
     await user.save();
     res
-      .clearCookie("rmb", { path: "/" })
-      .clearCookie("accessToken", { path: "/", sameSite: "none", secure: true })
-      .clearCookie("refreshToken", {
-        path: "/users/refreshToken",
-        sameSite: "none",
-        secure: true,
-      })
+      .clearCookie("rmb")
+      .clearCookie("accessToken")
+      .clearCookie("refreshToken")
       .send();
   } catch (err) {
     next(err);
@@ -89,13 +85,9 @@ usersRouter.post("/logoutAll", authorize, async (req: IRequest, res, next) => {
     user.refreshTokens = [];
     await user.save();
     res
-      .clearCookie("rmb", { path: "/" })
-      .clearCookie("accessToken", { path: "/", sameSite: "none", secure: true })
-      .clearCookie("refreshToken", {
-        path: "/users/refreshToken",
-        sameSite: "none",
-        secure: true,
-      })
+      .clearCookie("rmb")
+      .clearCookie("accessToken")
+      .clearCookie("refreshToken")
       .send();
   } catch (err) {
     next(err);
