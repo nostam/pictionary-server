@@ -21,4 +21,5 @@ export const refreshTokenOptions: CookieOptions = {
 export const rmbOptions: CookieOptions = {
   path: "/",
   sameSite: "none",
+  secure: true,
 };
